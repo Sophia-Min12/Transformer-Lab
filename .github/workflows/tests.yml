@@ -1,0 +1,16 @@
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      # NumPy from Day 3 on; PyTorch only in Level 5, and only to check
+      # this repo's gradients against a reference implementation.
+      - run: pip install pytest numpy
+      - run: pytest
