@@ -30,7 +30,7 @@ It is also how real frameworks are tested. `torch.autograd.gradcheck` does exact
 - [x] **Day 0** — Repo scaffold, CI, and curriculum roadmap
 
 **Level 1 · Autograd from Scratch**
-- [ ] **Day 1** — Scalar autograd: a `Value` that remembers how it was made
+- [x] **Day 1** — Scalar autograd: a `Value` that remembers how it was made
 - [ ] **Day 2** — More operations, and the finite-difference gradient check
 - [ ] **Day 3** — Tensor autograd: NumPy arrays and broadcasting
 - [ ] **Day 4** — Matrix multiplication and the chain rule in two dimensions
