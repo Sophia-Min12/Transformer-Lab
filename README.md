@@ -48,7 +48,7 @@ It is also how real frameworks are tested. `torch.autograd.gradcheck` does exact
 - [x] **Day 12** — Positional encoding: attention has no sense of order
 
 **Level 4 · A Working GPT**
-- [ ] **Day 13** — LayerNorm and residual connections
+- [x] **Day 13** — LayerNorm and residual connections
 - [ ] **Day 14** — The feed-forward network and the full transformer block
 - [ ] **Day 15** — Character-level GPT: assemble and train
 - [ ] **Day 16** — Sampling, temperature, and perplexity
