@@ -42,7 +42,7 @@ It is also how real frameworks are tested. `torch.autograd.gradcheck` does exact
 - [x] **Day 8** — Embedding layers and one-hot without the one-hot
 
 **Level 3 · Attention**
-- [ ] **Day 9** — Scaled dot-product attention
+- [x] **Day 9** — Scaled dot-product attention
 - [ ] **Day 10** — Causal masking: why a language model may not look ahead
 - [ ] **Day 11** — Multi-head attention
 - [ ] **Day 12** — Positional encoding: attention has no sense of order
