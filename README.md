@@ -36,7 +36,7 @@ It is also how real frameworks are tested. `torch.autograd.gradcheck` does exact
 - [x] **Day 4** — Matrix multiplication and the chain rule in two dimensions
 
 **Level 2 · The Pieces of a Network**
-- [ ] **Day 5** — Linear layers, initialization, and a `Module` base
+- [x] **Day 5** — Linear layers, initialization, and a `Module` base
 - [ ] **Day 6** — Softmax and cross-entropy, numerically stable
 - [ ] **Day 7** — SGD, Adam, and a training loop that learns something
 - [ ] **Day 8** — Embedding layers and one-hot without the one-hot
