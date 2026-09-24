@@ -45,7 +45,7 @@ It is also how real frameworks are tested. `torch.autograd.gradcheck` does exact
 - [x] **Day 9** — Scaled dot-product attention
 - [x] **Day 10** — Causal masking: why a language model may not look ahead
 - [x] **Day 11** — Multi-head attention
-- [ ] **Day 12** — Positional encoding: attention has no sense of order
+- [x] **Day 12** — Positional encoding: attention has no sense of order
 
 **Level 4 · A Working GPT**
 - [ ] **Day 13** — LayerNorm and residual connections
