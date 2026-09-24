@@ -287,8 +287,6 @@ class Tensor:
                 "reduce with .sum() or .mean() first"
             )
         ordered = self.topological_order()
-        for node in ordered:
-            node.grad = np.zeros_like(node.data)
         self.grad = np.ones_like(self.data)
         for node in reversed(ordered):
             node._backward()

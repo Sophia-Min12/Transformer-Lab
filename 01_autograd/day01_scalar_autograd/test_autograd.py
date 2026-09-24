@@ -109,14 +109,25 @@ class TestBackward(unittest.TestCase):
         self.assertAlmostEqual(x.grad, 6 * 2.0 ** 5)
 
     def test_backward_accumulates_across_calls(self):
-        # Documented behaviour, not a bug: it is what makes gradient
-        # accumulation over mini-batches work.
+        # Documented behaviour, not a bug: backward() seeds the output and
+        # adds into every .grad without clearing first, which is what makes
+        # gradient accumulation over mini-batches work - and what makes
+        # zero_grad() necessary rather than decorative. PyTorch is the same.
         a, b = Value(2.0), Value(3.0)
         out = a * b
         out.backward()
         first = a.grad
-        out._backward()
+        out.backward()
         self.assertEqual(a.grad, 2 * first)
+
+    def test_zero_grad_between_calls_prevents_the_doubling(self):
+        a, b = Value(2.0), Value(3.0)
+        out = a * b
+        out.backward()
+        first = a.grad
+        out.zero_grad()
+        out.backward()
+        self.assertEqual(a.grad, first)
 
     def test_zero_grad_clears_the_graph(self):
         a, b = Value(2.0), Value(3.0)

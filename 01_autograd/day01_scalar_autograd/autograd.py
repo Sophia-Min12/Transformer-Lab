@@ -152,8 +152,6 @@ class Value:
         possible, and every framework works this way.
         """
         ordered = self.topological_order()
-        for node in ordered:
-            node.grad = 0.0
         self.grad = 1.0
         for node in reversed(ordered):
             node._backward()

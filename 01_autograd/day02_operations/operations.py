@@ -222,8 +222,6 @@ class Value:
 
     def backward(self) -> None:
         ordered = self.topological_order()
-        for node in ordered:
-            node.grad = 0.0
         self.grad = 1.0
         for node in reversed(ordered):
             node._backward()
