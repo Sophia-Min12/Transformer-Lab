@@ -39,7 +39,7 @@ It is also how real frameworks are tested. `torch.autograd.gradcheck` does exact
 - [x] **Day 5** — Linear layers, initialization, and a `Module` base
 - [x] **Day 6** — Softmax and cross-entropy, numerically stable
 - [x] **Day 7** — SGD, Adam, and a training loop that learns something
-- [ ] **Day 8** — Embedding layers and one-hot without the one-hot
+- [x] **Day 8** — Embedding layers and one-hot without the one-hot
 
 **Level 3 · Attention**
 - [ ] **Day 9** — Scaled dot-product attention
