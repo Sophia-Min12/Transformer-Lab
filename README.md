@@ -49,7 +49,7 @@ It is also how real frameworks are tested. `torch.autograd.gradcheck` does exact
 
 **Level 4 · A Working GPT**
 - [x] **Day 13** — LayerNorm and residual connections
-- [ ] **Day 14** — The feed-forward network and the full transformer block
+- [x] **Day 14** — The feed-forward network and the full transformer block
 - [ ] **Day 15** — Character-level GPT: assemble and train
 - [ ] **Day 16** — Sampling, temperature, and perplexity
 
