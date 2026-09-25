@@ -51,7 +51,7 @@ It is also how real frameworks are tested. `torch.autograd.gradcheck` does exact
 - [x] **Day 13** — LayerNorm and residual connections
 - [x] **Day 14** — The feed-forward network and the full transformer block
 - [x] **Day 15** — Character-level GPT: assemble and train
-- [ ] **Day 16** — Sampling, temperature, and perplexity
+- [x] **Day 16** — Sampling, temperature, and perplexity
 
 **Level 5 · Marking the Homework**
 - [ ] **Day 17** — PyTorch comparison, profiling, and the honest writeup
