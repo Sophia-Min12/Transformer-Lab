@@ -54,7 +54,33 @@ It is also how real frameworks are tested. `torch.autograd.gradcheck` does exact
 - [x] **Day 16** — Sampling, temperature, and perplexity
 
 **Level 5 · Marking the Homework**
-- [ ] **Day 17** — PyTorch comparison, profiling, and the honest writeup
+- [x] **Day 17** — PyTorch comparison, profiling, and the honest writeup
+
+---
+
+## ✅ The result
+
+All 17 days complete. Day 17 checks the whole stack against PyTorch:
+
+```
+forward pass, largest absolute difference:   1.67e-16
+gradients, worst of 27 parameter tensors:    2.71e-15
+```
+
+Machine precision, on derivatives that were worked out by hand and never
+copied from a reference implementation.
+
+The repo is also a record of being wrong in public. Ten claims were
+contradicted by their own measurements — a gradient probe read backwards,
+a capacity demo solved by memorisation, a causality check defeated by
+weight tying, a held-out split that was a copy of the training text — and
+each is documented where it was made rather than quietly corrected.
+[Day 17](05_marking_the_homework/day17_pytorch_comparison/) lists them.
+
+One result still stands against the model: on this corpus a count-based
+trigram scores a **better perplexity** than the transformer, and takes no
+training at all. That is reported rather than buried, because a corpus of
+five repeated sentences has no long-range structure for attention to buy.
 
 ---
 

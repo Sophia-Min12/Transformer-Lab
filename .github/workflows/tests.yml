@@ -10,7 +10,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      # NumPy from Day 3 on; PyTorch only in Level 5, and only to check
-      # this repo's gradients against a reference implementation.
+      # NumPy from Day 3 on. PyTorch is installed so that Day 17's
+      # comparison actually runs here: its tests skip cleanly without it,
+      # which would leave a green badge standing for a check that never
+      # executed.
       - run: pip install pytest numpy
+      - run: pip install torch --index-url https://download.pytorch.org/whl/cpu
       - run: pytest
