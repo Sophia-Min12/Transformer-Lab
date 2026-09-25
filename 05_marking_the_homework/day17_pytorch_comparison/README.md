@@ -67,6 +67,15 @@ forward pass against sequence length      local log-log slope
 
 The slope climbs toward 2. At short lengths the per-node Python overhead above dominates and the curve looks almost linear; attention's `T²` term only takes over further out. A single fitted exponent across the whole range would average two regimes into a number describing neither — which is why the slopes are local.
 
+**These numbers are reported, not asserted.** I first wrote a test fixing that exponent between 0.8 and 2.6. It failed locally, so I widened the band to 0.5; CI then failed it at **0.38**, timing sub-millisecond work on a shared runner. Loosening a tolerance until a flaky measurement passes yields a test that asserts nothing. The `O(T²)` claim is about *work*, so the test now counts it:
+
+```
+attention score-matrix entries = blocks × heads × T²
+doubling the length quadruples it — exactly, every time
+```
+
+Timing belongs in this demo, where it is read. The assertion belongs on a quantity that does not depend on what else the machine is doing.
+
 ```
 generating 60 tokens processed 1,830 positions
 where a cached implementation processes 60  —  30.5x more work
@@ -96,6 +105,7 @@ A good many claims in this repo were wrong before they were measured, and each i
 | 16 | A held-out split that was a copy of the training text |
 | 16 | A perplexity measured past the window the model trained on |
 | 17 | A backward pass timed at *minus three milliseconds* |
+| 17 | A quadratic-cost claim asserted on wall-clock time, which CI measured at an exponent of 0.38 |
 
 And one result that still stands against the repo: on 2,940 characters, **a count-based trigram scores a better perplexity than this model** and takes no training at all. The transformer's advantage is long-range structure, and that corpus has none. A repo reporting only the flattering half of that would be teaching the wrong lesson.
 
@@ -128,4 +138,4 @@ Without it the torch tests **skip** and the demo says so in plain words. CI inst
 
 ## Where this leads
 
-Nowhere — this is the last day. The repo is 17 days, 624 tests, and one working GPT built from `d/dx` upward.
+Nowhere — this is the last day. The repo is 17 days, 627 tests, and one working GPT built from `d/dx` upward.

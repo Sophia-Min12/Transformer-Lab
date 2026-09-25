@@ -2292,6 +2292,33 @@ def pairwise_slopes(rows) -> list:
                        math.log(after[1] / before[1]) / ratio))
     return slopes
 
+
+def attention_work(model, length: int) -> int:
+    """Entries in every attention score matrix of one forward pass.
+
+    The quadratic term, **counted rather than timed**. Each block holds
+    ``heads`` score matrices of ``length × length``, so this is
+    ``blocks × heads × T²`` and doubling the length must quadruple it
+    exactly.
+
+    This function exists because the timed version could not carry the
+    claim. A fitted log-log exponent over wall-clock measurements came
+    out between 0.79 and 1.23 across six consecutive local runs, and CI
+    - a shared runner, timing sub-millisecond work - produced 0.38 for
+    computation that is provably superlinear. Widening the tolerance
+    until such a test passes does not make it a measurement of anything.
+    Timing belongs in the demo, where it is reported; the assertion
+    belongs on a quantity that does not depend on what else the machine
+    is doing.
+    """
+    ids = np.arange(length) % model.vocab_size
+    hidden = model.positions(model.tokens(ids))
+    total = 0
+    for block in model.blocks:
+        total += block.attention_weights(hidden).data.size
+        hidden = block(hidden)
+    return total
+
 def main() -> None:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")

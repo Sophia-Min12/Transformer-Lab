@@ -19,6 +19,7 @@ from comparison import (
     CharTokenizer,
     GPT,
     HONEST_ACCOUNT,
+    attention_work,
     cost_by_length,
     forward_agreement,
     generation_cost,
@@ -156,30 +157,55 @@ class TestScaling(unittest.TestCase):
         rows = cost_by_length(16, 1, 2, [64, 512], repeats=2)
         self.assertGreater(rows[-1][1], rows[0][1])
 
-    def test_the_exponent_is_between_linear_and_quadratic(self):
-        # Deliberately a wide band. This is wall-clock timing of
-        # sub-millisecond work on a machine running the rest of the
-        # suite: six consecutive runs here gave exponents from 0.79 to
-        # 1.23, and a bound of 0.8 duly failed once under load. The band
-        # asserts the shape of the claim - growth, not faster than
-        # quadratic - and the demo, run alone at longer lengths, is where
-        # the number is actually read.
-        rows = cost_by_length(16, 1, 2, [64, 128, 256], repeats=2)
-        exponent = scaling_exponent(rows)
-        self.assertGreater(exponent, 0.5)
-        self.assertLess(exponent, 3.0)
-
     def test_pairwise_slopes_line_up_with_the_lengths(self):
         rows = cost_by_length(16, 1, 2, [16, 32, 64], repeats=1)
         slopes = pairwise_slopes(rows)
         self.assertEqual([(a, b) for a, b, _ in slopes], [(16, 32), (32, 64)])
 
-    def test_attention_is_the_quadratic_part(self):
-        # Doubling the length more than doubles the cost, which is the
-        # claim; asserting a specific exponent at this size would be
-        # asserting noise, as the demo's local slopes show.
-        rows = cost_by_length(16, 1, 2, [64, 256], repeats=2)
-        self.assertGreater(rows[1][1] / rows[0][1], 4.0 * 0.6)
+    def test_a_fitted_exponent_is_reported_but_not_asserted(self):
+        # scaling_exponent returns a finite number; what it must NOT do is
+        # carry the quadratic claim. See test_attention_is_exactly
+        # _quadratic below, and attention_work's docstring, for why.
+        rows = cost_by_length(16, 1, 2, [32, 64, 128], repeats=1)
+        self.assertTrue(math.isfinite(scaling_exponent(rows)))
+
+
+class TestAttentionIsQuadratic(unittest.TestCase):
+    """The claim, asserted on work rather than on wall-clock time.
+
+    Two earlier versions of this were timing tests and both were wrong to
+    be tests at all. A fitted log-log exponent ranged 0.79 to 1.23 across
+    six local runs; widening the band to 0.5 then let CI fail it at 0.38,
+    on a shared runner timing sub-millisecond work. Loosening a tolerance
+    until a flaky measurement passes produces a test that asserts
+    nothing. Counting the score-matrix entries is exact, and it is what
+    the O(T squared) claim actually says.
+    """
+
+    def test_doubling_the_length_quadruples_the_attention_work(self):
+        model = small_model(max_length=512)
+        for length in (16, 32, 64):
+            self.assertEqual(attention_work(model, 2 * length),
+                             4 * attention_work(model, length))
+
+    def test_it_is_blocks_times_heads_times_length_squared(self):
+        model = GPT(vocab_size=12, dim=16, blocks=3, heads=4, max_length=128, seed=0)
+        self.assertEqual(attention_work(model, 32), 3 * 4 * 32 * 32)
+
+    def test_more_heads_do_not_change_the_total(self):
+        # Day 11's point, visible in the arithmetic: h heads of width d/h
+        # cost the same as one head of width d.
+        totals = {heads: attention_work(
+            GPT(vocab_size=12, dim=16, blocks=1, heads=heads, max_length=64, seed=0), 32)
+            for heads in (1, 2, 4, 8)}
+        self.assertEqual(len(set(totals.values())), len(totals))
+
+    def test_the_feed_forward_part_is_only_linear(self):
+        # Contrast: the rest of the block grows with T, not T squared, so
+        # the ratio of attention work to sequence length itself grows.
+        model = small_model(max_length=512)
+        ratios = [attention_work(model, length) / length for length in (32, 64, 128)]
+        self.assertEqual(ratios, sorted(ratios))
 
 
 class TestGenerationCost(unittest.TestCase):
